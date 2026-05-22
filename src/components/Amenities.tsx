@@ -3,43 +3,48 @@
 import Image from "next/image";
 import { useLang } from "@/context/LangContext";
 
-const cards = [
+const featuredCards = [
+  {
+    img: "/images/interior-sofa.jpeg",
+    sr: "Dnevni boravak",
+    en: "Living room",
+    desc: { sr: "Sofa, šank, TV, klima", en: "Sofa, bar, TV, AC" },
+  },
   {
     img: "/images/bedroom-double.jpeg",
-    icon: "🛏",
-    sr: { title: "Spavaće sobe", body: "Dvije prostrane sobe pod mansardnim krovom od punog drveta. Udobni kreveti za miran san uz zvuk jezera." },
-    en: { title: "Bedrooms", body: "Two spacious rooms under a solid wood attic roof. Comfortable beds for a peaceful night's sleep by the lake." },
-  },
-  {
-    img: "/images/interior-bar-wide.jpeg",
-    icon: "🍺",
-    sr: { title: "Dnevni boravak i šank", body: "Rustični šank sa bar stolicama, TV i pogledom na jezero — savršen za opuštanje u svakom dobu dana." },
-    en: { title: "Living room & Bar", body: "Rustic bar with bar stools, TV, and a lake view — perfect for relaxing at any time of day." },
-  },
-  {
-    img: "/images/grill.jpeg",
-    icon: "🔥",
-    sr: { title: "Roštilj paviljon", body: "Tradicionalni zidani roštilj s nadstrešnicom i sjedalima — idealan za ručkove i večere na svježem zraku." },
-    en: { title: "BBQ Pavilion", body: "Traditional brick BBQ with a wooden shelter and seating — ideal for outdoor lunches and dinners." },
-  },
-  {
-    img: "/images/dock-view.jpeg",
-    icon: "⛵",
-    sr: { title: "Terasa i pristanište", body: "Drvena terasa direktno nad vodom sa ležaljkama i privatom za čamac — jutarnja kafa, pecanje ili kupanje." },
-    en: { title: "Terrace & Dock", body: "Wooden terrace directly over the water with sun loungers and a boat dock — morning coffee, fishing, or a swim." },
+    sr: "Spavaća soba",
+    en: "Bedroom",
+    desc: { sr: "3 ležaja, mansardni krov", en: "3 beds, attic roof" },
   },
   {
     img: "/images/exterior-deck.jpeg",
-    icon: "🌊",
-    sr: { title: "Zvorničko jezero", body: "Smješteni na obali Zvorničkog jezera, okruženi zelenim planinama — raj za ljubitelje prirode i mira." },
-    en: { title: "Lake Zvornik", body: "Located on the shores of Lake Zvornik, surrounded by green mountains — paradise for nature lovers and peace seekers." },
+    sr: "Terasa na vodi",
+    en: "Water terrace",
+    desc: { sr: "Direktno iznad jezera", en: "Directly above the lake" },
   },
   {
-    img: "/images/terrace-view.jpeg",
-    icon: "🌿",
-    sr: { title: "Vrt i okruženje", body: "Uređen zeleni vrt između vikendice i roštilj paviljona — prostor za igru, odmor i uživanje u prirodi." },
-    en: { title: "Garden & Grounds", body: "A well-kept green garden between the cabin and the BBQ pavilion — space for play, rest, and enjoying nature." },
+    img: "/images/grill.jpeg",
+    sr: "Roštilj paviljon",
+    en: "BBQ pavilion",
+    desc: { sr: "Zidani roštilj, sjedište", en: "Brick BBQ, seating" },
   },
+];
+
+const amenityList = [
+  { icon: "🛏", sr: "Spavaća soba (3 ležaja)", en: "Bedroom (3 beds)" },
+  { icon: "🍳", sr: "Kuhinja s pločom",       en: "Kitchen with hob" },
+  { icon: "☕", sr: "Aparat za kafu",         en: "Coffee machine" },
+  { icon: "❄️", sr: "Klima uređaj",           en: "Air conditioning" },
+  { icon: "📺", sr: "Televizija",             en: "Television" },
+  { icon: "🚿", sr: "Kupatilo",              en: "Bathroom" },
+  { icon: "⛵", sr: "Privatni čamac",         en: "Private boat" },
+  { icon: "🚗", sr: "Privatni parking",       en: "Private parking" },
+  { icon: "🪑", sr: "Ležaljke",              en: "Sun loungers" },
+  { icon: "📷", sr: "Sigurnosne kamere",      en: "Security cameras" },
+  { icon: "🔥", sr: "Roštilj paviljon",       en: "BBQ pavilion" },
+  { icon: "🌊", sr: "Direktan izlaz na vodu", en: "Direct water access" },
+  { icon: "🏡", sr: "Natkrivena terasa",      en: "Covered terrace" },
+  { icon: "🎣", sr: "Oprema za pecanje",      en: "Fishing equipment" },
 ];
 
 export default function Amenities() {
@@ -48,38 +53,74 @@ export default function Amenities() {
   return (
     <section id="smestaj" className="py-24 bg-wood-dark">
       <div className="max-w-6xl mx-auto px-6">
+
+        {/* Header */}
         <div className="text-center mb-14">
           <span className="text-gold text-xs font-bold uppercase tracking-[0.15em] before:content-['—_'] mb-3 block">
             {t("Smeštaj i sadržaji", "Accommodation")}
           </span>
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-cream">
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-cream mb-4">
             {t("Sve što vam treba", "Everything you need")}
           </h2>
+          <p className="text-cream/55 max-w-xl mx-auto text-sm leading-relaxed">
+            {t(
+              "Vikendica je potpuno opremljena — od kuhinje i klime do privatnog čamca i ležaljki na terasi iznad jezera.",
+              "The cabin is fully equipped — from kitchen and AC to a private boat and sun loungers on the terrace above the lake."
+            )}
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {cards.map((card, i) => (
+        {/* 4 foto kartice */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-12">
+          {featuredCards.map((card, i) => (
             <div
               key={i}
-              className="group bg-white/5 border border-white/8 rounded-xl overflow-hidden hover:-translate-y-1.5 hover:border-gold transition-all duration-300"
+              className="group relative overflow-hidden rounded-xl aspect-[3/4] cursor-default"
             >
-              <div className="relative h-48 overflow-hidden">
-                <Image
-                  src={card.img}
-                  alt={card[lang].title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
-              </div>
-              <div className="p-5">
-                <div className="text-3xl mb-3">{card.icon}</div>
-                <h3 className="font-serif text-xl text-cream mb-2">{card[lang].title}</h3>
-                <p className="text-cream/60 text-sm leading-relaxed">{card[lang].body}</p>
+              <Image
+                src={card.img}
+                alt={card[lang]}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                sizes="(max-width: 768px) 50vw, 25vw"
+              />
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              {/* Text */}
+              <div className="absolute bottom-0 left-0 right-0 p-4">
+                <p className="text-gold text-xs font-bold uppercase tracking-widest mb-1">
+                  {card.desc[lang]}
+                </p>
+                <h3 className="font-serif text-white text-lg font-semibold leading-tight">
+                  {card[lang]}
+                </h3>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Kompletna opremljenost */}
+        <div className="border border-white/10 rounded-2xl p-6 md:p-8">
+          <h3 className="font-serif text-cream text-xl mb-6 flex items-center gap-3">
+            <span className="block w-8 h-px bg-gold" />
+            {t("Kompletna opremljenost", "Full amenities")}
+            <span className="block w-8 h-px bg-gold" />
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-0">
+            {amenityList.map((item, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-3 py-3 border-b border-white/8 last:border-0"
+              >
+                <span className="text-xl flex-shrink-0">{item.icon}</span>
+                <span className="text-cream/75 text-sm">
+                  {t(item.sr, item.en)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </section>
   );

@@ -4,19 +4,28 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useLang } from "@/context/LangContext";
 
+// Grid logika (4 kolone): drone(2×2)=4ć + 4×1ć + grill(2×1)=2ć + 2×1ć + 4×1ć + 4×1ć = 20ć → 5 čistih redova
 const photos = [
-  { src: "/images/drone-02.jpeg",         sr: "Pogled iz drona",    en: "Drone view",       span: "col-span-2 row-span-2" },
-  { src: "/images/exterior-wide.jpeg",    sr: "Vikendica",          en: "The cabin",        span: "" },
-  { src: "/images/dock-view.jpeg",        sr: "Pristanište",        en: "Dock",             span: "" },
-  { src: "/images/interior-bar-wide.jpeg",sr: "Šank i boravak",     en: "Bar & lounge",     span: "" },
-  { src: "/images/interior-bar-lake.jpeg",sr: "Pogled na jezero",   en: "Lake view",        span: "" },
-  { src: "/images/grill.jpeg",            sr: "Roštilj paviljon",   en: "BBQ pavilion",     span: "col-span-2" },
-  { src: "/images/bedroom-double.jpeg",   sr: "Spavaća soba",       en: "Bedroom",          span: "" },
-  { src: "/images/bedroom-single.jpeg",   sr: "Spavaća soba 2",     en: "Bedroom 2",        span: "" },
-  { src: "/images/terrace-view.jpeg",     sr: "Pogled s terase",    en: "Terrace view",     span: "" },
-  { src: "/images/exterior-deck.jpeg",    sr: "Terasa na vodi",     en: "Water terrace",    span: "" },
-  { src: "/images/drone-01.jpeg",         sr: "Iz vazduha",         en: "From above",       span: "" },
-  { src: "/images/drone-03.jpeg",         sr: "Imanje",             en: "The property",     span: "" },
+  // Red 1-2: drone hero + 4 eksterijera
+  { src: "/images/drone-02.jpeg",          sr: "Pogled iz drona",    en: "Drone view",        span: "col-span-2 row-span-2" },
+  { src: "/images/exterior-wide.jpeg",     sr: "Vikendica",          en: "The cabin",         span: "" },
+  { src: "/images/dock-view.jpeg",         sr: "Pristanište",        en: "Dock",              span: "" },
+  { src: "/images/exterior-deck.jpeg",     sr: "Terasa na vodi",     en: "Water terrace",     span: "" },
+  { src: "/images/terrace-view.jpeg",      sr: "Pogled s terase",    en: "Terrace view",      span: "" },
+  // Red 3: roštilj (2ć) + 2 interijera
+  { src: "/images/grill.jpeg",             sr: "Roštilj paviljon",   en: "BBQ pavilion",      span: "col-span-2" },
+  { src: "/images/interior-bar-clean.jpeg",sr: "Šank",               en: "Bar",               span: "" },
+  { src: "/images/interior-living.jpeg",   sr: "Dnevni boravak",     en: "Living room",       span: "" },
+  // Red 4: sobe + eksterijeri
+  { src: "/images/bedroom-double.jpeg",    sr: "Soba — ugao 1",      en: "Bedroom — angle 1", span: "" },
+  { src: "/images/bedroom-single.jpeg",    sr: "Soba — ugao 2",      en: "Bedroom — angle 2", span: "" },
+  { src: "/images/interior-bar-wide.jpeg", sr: "Šank i boravak",     en: "Bar & lounge",      span: "" },
+  { src: "/images/drone-01.jpeg",          sr: "Iz vazduha",         en: "From above",        span: "" },
+  // Red 5: kupatila + dron
+  { src: "/images/bathroom.jpeg",          sr: "Kupatilo",           en: "Bathroom",          span: "" },
+  { src: "/images/wc.jpeg",                 sr: "WC",                 en: "WC",                span: "" },
+  { src: "/images/drone-03.jpeg",          sr: "Imanje",             en: "The property",      span: "" },
+  { src: "/images/interior-bar-lake.jpeg",  sr: "Pogled na jezero",   en: "Lake view",         span: "" },
 ];
 
 export default function Gallery() {
