@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import emailjs from "@emailjs/browser";
 import { useLang } from "@/context/LangContext";
@@ -10,17 +10,20 @@ const EMAILJS_SERVICE_ID  = "YOUR_SERVICE_ID";
 const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID";
 const EMAILJS_PUBLIC_KEY  = "YOUR_PUBLIC_KEY";
 
+const inputClass =
+  "px-4 py-2.5 border-[1.5px] border-cream-dark rounded-lg bg-cream text-text placeholder:text-gray-400 focus:outline-none focus:border-gold transition-colors";
+
 export default function Contact() {
-  const { lang, t } = useLang();
+  const { t } = useLang();
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [form, setForm] = useState({
-    name: "", email: "", phone: "", dates: "", message: "",
+    name: "", email: "", phone: "", dateFrom: "", dateTo: "", message: "",
   });
 
   const handle = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const submit = async (e: FormEvent) => {
+  const submit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setStatus("sending");
     try {
@@ -31,22 +34,23 @@ export default function Contact() {
           from_name:  form.name,
           from_email: form.email,
           phone:      form.phone,
-          dates:      form.dates,
+          dates:      `${form.dateFrom} – ${form.dateTo}`,
           message:    form.message,
         },
         EMAILJS_PUBLIC_KEY
       );
       setStatus("success");
-      setForm({ name: "", email: "", phone: "", dates: "", message: "" });
+      setForm({ name: "", email: "", phone: "", dateFrom: "", dateTo: "", message: "" });
     } catch {
       setStatus("error");
     }
   };
 
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <section id="kontakt" className="py-24 bg-cream">
       <div className="max-w-6xl mx-auto px-6">
-        {/* Header */}
         <div className="text-center mb-14">
           <span className="text-gold text-xs font-bold uppercase tracking-[0.15em] before:content-['—_'] mb-3 block">
             {t("Kontakt", "Contact")}
@@ -66,6 +70,7 @@ export default function Contact() {
           {/* Form */}
           <form onSubmit={submit} className="bg-white rounded-xl shadow-lg p-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+              {/* Ime */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold uppercase tracking-wide text-text">
                   {t("Ime i prezime", "Full name")}
@@ -73,9 +78,10 @@ export default function Contact() {
                 <input
                   name="name" value={form.name} onChange={handle} required
                   placeholder={t("Marko Marković", "John Smith")}
-                  className="px-4 py-2.5 border-[1.5px] border-cream-dark rounded-lg bg-cream text-text placeholder:text-gray-400 focus:outline-none focus:border-gold transition-colors"
+                  className={inputClass}
                 />
               </div>
+              {/* Email */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold uppercase tracking-wide text-text">
                   {t("Email adresa", "Email address")}
@@ -83,9 +89,10 @@ export default function Contact() {
                 <input
                   type="email" name="email" value={form.email} onChange={handle} required
                   placeholder={t("marko@email.com", "john@email.com")}
-                  className="px-4 py-2.5 border-[1.5px] border-cream-dark rounded-lg bg-cream text-text placeholder:text-gray-400 focus:outline-none focus:border-gold transition-colors"
+                  className={inputClass}
                 />
               </div>
+              {/* Telefon */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold uppercase tracking-wide text-text">
                   {t("Broj telefona", "Phone number")}
@@ -93,20 +100,31 @@ export default function Contact() {
                 <input
                   type="tel" name="phone" value={form.phone} onChange={handle}
                   placeholder="+381 ..."
-                  className="px-4 py-2.5 border-[1.5px] border-cream-dark rounded-lg bg-cream text-text placeholder:text-gray-400 focus:outline-none focus:border-gold transition-colors"
+                  className={inputClass}
                 />
               </div>
+              {/* Datumi */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold uppercase tracking-wide text-text">
                   {t("Željeni termin", "Desired dates")}
                 </label>
-                <input
-                  name="dates" value={form.dates} onChange={handle}
-                  placeholder={t("npr. 10.06 – 15.06.2026", "e.g. Jun 10 – Jun 15, 2026")}
-                  className="px-4 py-2.5 border-[1.5px] border-cream-dark rounded-lg bg-cream text-text placeholder:text-gray-400 focus:outline-none focus:border-gold transition-colors"
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    type="date" name="dateFrom" value={form.dateFrom} onChange={handle}
+                    min={today}
+                    className={`${inputClass} flex-1 min-w-0`}
+                  />
+                  <span className="text-text-light text-sm flex-shrink-0">–</span>
+                  <input
+                    type="date" name="dateTo" value={form.dateTo} onChange={handle}
+                    min={form.dateFrom || today}
+                    className={`${inputClass} flex-1 min-w-0`}
+                  />
+                </div>
               </div>
             </div>
+
+            {/* Poruka */}
             <div className="flex flex-col gap-1.5 mb-6">
               <label className="text-xs font-bold uppercase tracking-wide text-text">
                 {t("Poruka", "Message")}
@@ -114,9 +132,10 @@ export default function Contact() {
               <textarea
                 name="message" value={form.message} onChange={handle} rows={5}
                 placeholder={t("Vaša poruka...", "Your message...")}
-                className="px-4 py-2.5 border-[1.5px] border-cream-dark rounded-lg bg-cream text-text placeholder:text-gray-400 focus:outline-none focus:border-gold transition-colors resize-y"
+                className={`${inputClass} resize-y`}
               />
             </div>
+
             <button
               type="submit"
               disabled={status === "sending"}
@@ -130,6 +149,7 @@ export default function Contact() {
                 <polygon points="22 2 15 22 11 13 2 9 22 2" />
               </svg>
             </button>
+
             {status === "success" && (
               <p className="mt-4 text-center text-green text-sm font-medium">
                 ✓ {t("Poruka je uspješno poslana! Javićemo vam se uskoro.", "Message sent successfully! We'll get back to you soon.")}
@@ -153,7 +173,7 @@ export default function Contact() {
                     <circle cx="12" cy="10" r="3"/>
                   </svg>
                   <span className="text-cream/80">
-                    {t("Zvorničko jezero, Bosna i Hercegovina", "Lake Zvornik, Bosnia and Herzegovina")}
+                    {t("Zvorničko jezero, Srbija", "Lake Zvornik, Serbia")}
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
