@@ -8,18 +8,16 @@ export default function Hero() {
 
   return (
     <section id="hero" className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
-      {/* Video background */}
+      {/* Photo background */}
       <div className="absolute inset-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/images/exterior-wide.jpeg"
-          className="w-full h-full object-cover"
-        >
-          <source src="/video/drone.mp4" type="video/mp4" />
-        </video>
+        <Image
+          src="/images/exterior-wide.jpeg"
+          alt="Vikendica Vučetić — Zvorničko jezero"
+          fill
+          priority
+          className="object-cover object-center"
+          sizes="100vw"
+        />
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/70" />
       </div>

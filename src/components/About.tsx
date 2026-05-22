@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useLang } from "@/context/LangContext";
 
 export default function About() {
@@ -45,15 +44,18 @@ export default function About() {
             </a>
           </div>
 
-          {/* Image */}
+          {/* Video */}
           <div className="relative rounded-xl overflow-hidden shadow-2xl aspect-[4/5]">
-            <Image
-              src="/images/exterior-wide.jpeg"
-              alt="Vikendica Vučetić na jezeru"
-              fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 50vw"
-            />
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster="/images/exterior-wide.jpeg"
+              className="absolute inset-0 w-full h-full object-cover"
+            >
+              <source src="/video/drone.mp4" type="video/mp4" />
+            </video>
             <div className="absolute bottom-5 left-5 bg-gold text-white px-4 py-3 rounded-lg shadow-lg font-serif italic text-lg leading-snug">
               {t("Direktno\nna vodi", "Right on\nthe water").split("\n").map((line, i) => (
                 <span key={i} className="block">{line}</span>
