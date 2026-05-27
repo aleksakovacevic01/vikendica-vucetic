@@ -26,7 +26,7 @@ export default function About() {
             />
             <p className="text-text-light leading-relaxed mb-5">
               {t(
-                "Vikendica Vučetić je autentična drvena kuća smještena direktno na obali Zvorničkog jezera. Okružena zelenilom i tišinom, savršena je za porodični odmor, ribolov, ili jednostavno bijeg od gradske vreve.",
+                "Vikendica Vučetić je autentična drvena kuća smeštena direktno na obali Zvorničkog jezera. Okružena zelenilom i tišinom, savršena je za porodični odmor, ribolov, ili jednostavno beg od gradske vreve.",
                 "Vučetić Cabin is an authentic wooden house nestled right on the shores of Lake Zvornik. Surrounded by greenery and silence, it is perfect for a family retreat, fishing, or simply escaping the noise of the city."
               )}
             </p>

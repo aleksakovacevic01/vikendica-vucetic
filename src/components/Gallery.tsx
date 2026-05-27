@@ -22,6 +22,10 @@ const photos = [
   { src: "/images/wc.jpeg",               sr: "WC",                 en: "WC",                span: "" },
   { src: "/images/drone-03.jpeg",          sr: "Imanje",             en: "The property",      span: "" },
   { src: "/images/interior-bar-lake.jpeg", sr: "Pogled na jezero",   en: "Lake view",         span: "" },
+  { src: "/images/parking-overview.jpeg", sr: "Parking",            en: "Parking",           span: "" },
+  { src: "/images/parking-entrance.jpeg", sr: "Ulaz u imanje",      en: "Property entrance", span: "" },
+  { src: "/images/boat-shore.jpeg",       sr: "Čamci na obali",     en: "Boats at shore",    span: "" },
+  { src: "/images/boat-sunset.jpeg",      sr: "Čamac pri zalasku",  en: "Boat at sunset",    span: "" },
 ];
 
 export default function Gallery() {

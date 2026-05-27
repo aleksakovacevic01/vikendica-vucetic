@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useLang } from "@/context/LangContext";
 
@@ -9,24 +10,47 @@ const featuredCards = [
     sr: "Dnevni boravak",
     en: "Living room",
     desc: { sr: "Sofa, šank, TV, klima", en: "Sofa, bar, TV, AC" },
+    photos: [
+      "/images/interior-sofa.jpeg",
+      "/images/interior-living.jpeg",
+      "/images/interior-bar-clean.jpeg",
+      "/images/interior-bar-wide.jpeg",
+      "/images/interior-bar-lake.jpeg",
+    ],
   },
   {
     img: "/images/bedroom-double.jpeg",
     sr: "Spavaća soba",
     en: "Bedroom",
     desc: { sr: "3 ležaja, mansardni krov", en: "3 beds, attic roof" },
+    photos: [
+      "/images/bedroom-double.jpeg",
+      "/images/bedroom-single.jpeg",
+      "/images/stairs.jpeg",
+    ],
   },
   {
     img: "/images/exterior-deck.jpeg",
     sr: "Terasa na vodi",
     en: "Water terrace",
     desc: { sr: "Direktno iznad jezera", en: "Directly above the lake" },
+    photos: [
+      "/images/exterior-deck.jpeg",
+      "/images/dock-view.jpeg",
+      "/images/terrace-view.jpeg",
+      "/images/terrace-dock.jpeg",
+    ],
   },
   {
     img: "/images/grill.jpeg",
     sr: "Roštilj paviljon",
     en: "BBQ pavilion",
-    desc: { sr: "Zidani roštilj, sjedište", en: "Brick BBQ, seating" },
+    desc: { sr: "Zidani roštilj, sedište", en: "Brick BBQ, seating" },
+    photos: [
+      "/images/grill.jpeg",
+      "/images/grill-wide.jpeg",
+      "/images/exterior-wide.jpeg",
+    ],
   },
 ];
 
@@ -49,6 +73,36 @@ const amenityList = [
 
 export default function Amenities() {
   const { lang, t } = useLang();
+  const [modal, setModal] = useState<{ cardIdx: number; photoIdx: number } | null>(null);
+
+  const close = () => setModal(null);
+
+  const prev = useCallback(() => {
+    if (!modal) return;
+    const total = featuredCards[modal.cardIdx].photos.length;
+    setModal({ ...modal, photoIdx: (modal.photoIdx - 1 + total) % total });
+  }, [modal]);
+
+  const next = useCallback(() => {
+    if (!modal) return;
+    const total = featuredCards[modal.cardIdx].photos.length;
+    setModal({ ...modal, photoIdx: (modal.photoIdx + 1) % total });
+  }, [modal]);
+
+  useEffect(() => {
+    if (!modal) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape")     close();
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft")  prev();
+    };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [modal, prev, next]);
 
   return (
     <section id="smestaj" className="py-24 bg-wood-dark">
@@ -75,7 +129,8 @@ export default function Amenities() {
           {featuredCards.map((card, i) => (
             <div
               key={i}
-              className="group relative overflow-hidden rounded-xl aspect-[3/4] cursor-default"
+              onClick={() => setModal({ cardIdx: i, photoIdx: 0 })}
+              className="group relative overflow-hidden rounded-xl aspect-[3/4] cursor-pointer"
             >
               <Image
                 src={card.img}
@@ -122,6 +177,82 @@ export default function Amenities() {
         </div>
 
       </div>
+
+      {/* Modal */}
+      {modal !== null && (() => {
+        const card = featuredCards[modal.cardIdx];
+        const photos = card.photos;
+        return (
+          <div
+            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
+            onClick={close}
+          >
+            <button
+              onClick={close}
+              className="absolute top-5 right-5 text-white/70 hover:text-white text-3xl leading-none z-10"
+            >
+              ✕
+            </button>
+
+            {/* Naslov */}
+            <div className="absolute top-5 left-1/2 -translate-x-1/2 text-center z-10">
+              <p className="text-gold text-xs font-bold uppercase tracking-widest">{card.desc[lang]}</p>
+              <h3 className="font-serif text-white text-lg font-semibold">{card[lang]}</h3>
+            </div>
+
+            {photos.length > 1 && (
+              <button
+                onClick={(e) => { e.stopPropagation(); prev(); }}
+                className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-6xl leading-none z-10 px-2"
+              >
+                ‹
+              </button>
+            )}
+
+            <div
+              className="relative max-w-[90vw] max-h-[80vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={photos[modal.photoIdx]}
+                alt={card[lang]}
+                width={1400}
+                height={900}
+                className="object-contain max-h-[80vh] w-auto rounded"
+              />
+            </div>
+
+            {photos.length > 1 && (
+              <button
+                onClick={(e) => { e.stopPropagation(); next(); }}
+                className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-6xl leading-none z-10 px-2"
+              >
+                ›
+              </button>
+            )}
+
+            {/* Thumbnails */}
+            {photos.length > 1 && (
+              <div
+                className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {photos.map((src, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setModal({ ...modal, photoIdx: idx })}
+                    className={`w-12 h-8 relative rounded overflow-hidden border-2 transition-colors ${
+                      idx === modal.photoIdx ? "border-gold" : "border-white/20"
+                    }`}
+                  >
+                    <Image src={src} alt="" fill className="object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })()}
     </section>
   );
 }

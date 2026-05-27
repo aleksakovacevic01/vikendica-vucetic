@@ -152,7 +152,7 @@ export default function Contact() {
 
             {status === "success" && (
               <p className="mt-4 text-center text-green text-sm font-medium">
-                ✓ {t("Poruka je uspješno poslana! Javićemo vam se uskoro.", "Message sent successfully! We'll get back to you soon.")}
+                ✓ {t("Poruka je uspešno poslata! Javićemo vam se uskoro.", "Message sent successfully! We'll get back to you soon.")}
               </p>
             )}
             {status === "error" && (
@@ -190,8 +190,8 @@ export default function Contact() {
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                     <polyline points="22,6 12,13 2,6"/>
                   </svg>
-                  <a href="mailto:draganvucetic001@gmail.com" className="text-cream/80 hover:text-gold transition-colors break-all">
-                    draganvucetic001@gmail.com
+                  <a href="mailto:vikendicavucetic@gmail.com" className="text-cream/80 hover:text-gold transition-colors break-all">
+                    vikendicavucetic@gmail.com
                   </a>
                 </li>
               </ul>
