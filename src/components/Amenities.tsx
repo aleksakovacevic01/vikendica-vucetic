@@ -45,11 +45,10 @@ const featuredCards = [
     img: "/images/grill.jpeg",
     sr: "Roštilj paviljon",
     en: "BBQ pavilion",
-    desc: { sr: "Zidani roštilj, sedište", en: "Brick BBQ, seating" },
+    desc: { sr: "Zidani roštilj", en: "Brick BBQ" },
     photos: [
       "/images/grill.jpeg",
       "/images/grill-wide.jpeg",
-      "/images/exterior-wide.jpeg",
     ],
   },
 ];
@@ -68,7 +67,7 @@ const amenityList = [
   { icon: "🔥", sr: "Roštilj paviljon",       en: "BBQ pavilion" },
   { icon: "🌊", sr: "Direktan izlaz na vodu", en: "Direct water access" },
   { icon: "🏡", sr: "Natkrivena terasa",      en: "Covered terrace" },
-  { icon: "🎣", sr: "Oprema za pecanje",      en: "Fishing equipment" },
+  { icon: "📶", sr: "WiFi",                    en: "WiFi" },
 ];
 
 export default function Amenities() {
@@ -156,7 +155,7 @@ export default function Amenities() {
 
         {/* Kompletna opremljenost */}
         <div className="border border-white/10 rounded-2xl p-6 md:p-8">
-          <h3 className="font-serif text-cream text-xl mb-6 flex items-center gap-3">
+          <h3 className="font-serif text-cream text-xl mb-6 flex items-center justify-center gap-3">
             <span className="block w-8 h-px bg-gold" />
             {t("Kompletna opremljenost", "Full amenities")}
             <span className="block w-8 h-px bg-gold" />

@@ -40,7 +40,7 @@ export default function Hero() {
             ),
           }}
         />
-        <p className="text-lg md:text-xl font-light opacity-90 mb-10 tracking-wide">
+        <p className="font-serif text-lg md:text-xl italic font-normal opacity-90 mb-10 tracking-wide">
           {t(
             "Vikendica Vučetić — Zvorničko jezero",
             "Vučetić Cabin — Lake Zvornik"

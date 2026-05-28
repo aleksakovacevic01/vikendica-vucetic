@@ -1,27 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import emailjs from "@emailjs/browser";
+import { DayPicker } from "react-day-picker";
 import { useLang } from "@/context/LangContext";
 
-// TODO: Replace with your actual EmailJS credentials after creating an account at emailjs.com
-const EMAILJS_SERVICE_ID  = "YOUR_SERVICE_ID";
-const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID";
-const EMAILJS_PUBLIC_KEY  = "YOUR_PUBLIC_KEY";
+const EMAILJS_SERVICE_ID  = "service_lpcu56x";
+const EMAILJS_TEMPLATE_ID = "template_gep1fy5";
+const EMAILJS_PUBLIC_KEY  = "EGcv0kgUMCv9tfJgL";
 
 const inputClass =
   "px-4 py-2.5 border-[1.5px] border-cream-dark rounded-lg bg-cream text-text placeholder:text-gray-400 focus:outline-none focus:border-gold transition-colors";
 
+const fmt = (d: Date) =>
+  d.toLocaleDateString("sr-Latn-RS", { day: "2-digit", month: "2-digit", year: "numeric" });
+
 export default function Contact() {
   const { t } = useLang();
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
-  const [form, setForm] = useState({
-    name: "", email: "", phone: "", dateFrom: "", dateTo: "", message: "",
-  });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
+  const [dateFrom, setDateFrom] = useState<Date | undefined>();
+  const [dateTo, setDateTo] = useState<Date | undefined>();
+  const [showFrom, setShowFrom] = useState(false);
+  const [showTo, setShowTo] = useState(false);
+  const fromRef = useRef<HTMLDivElement>(null);
+  const toRef = useRef<HTMLDivElement>(null);
 
   const handle = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm({ ...form, [e.target.name]: e.target.value });
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (fromRef.current && !fromRef.current.contains(e.target as Node)) setShowFrom(false);
+      if (toRef.current   && !toRef.current.contains(e.target as Node))   setShowTo(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
 
   const submit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -34,19 +50,24 @@ export default function Contact() {
           from_name:  form.name,
           from_email: form.email,
           phone:      form.phone,
-          dates:      `${form.dateFrom} – ${form.dateTo}`,
+          dates:      dateFrom && dateTo
+                        ? `${fmt(dateFrom)} – ${fmt(dateTo)}`
+                        : t("Nije navedeno", "Not specified"),
           message:    form.message,
         },
         EMAILJS_PUBLIC_KEY
       );
       setStatus("success");
-      setForm({ name: "", email: "", phone: "", dateFrom: "", dateTo: "", message: "" });
+      setForm({ name: "", email: "", phone: "", message: "" });
+      setDateFrom(undefined);
+      setDateTo(undefined);
     } catch {
       setStatus("error");
     }
   };
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   return (
     <section id="kontakt" className="py-24 bg-cream">
@@ -103,24 +124,69 @@ export default function Contact() {
                   className={inputClass}
                 />
               </div>
-              {/* Datumi */}
-              <div className="flex flex-col gap-1.5">
+
+              {/* Datum dolaska */}
+              <div className="flex flex-col gap-1.5 relative" ref={fromRef}>
                 <label className="text-xs font-bold uppercase tracking-wide text-text">
-                  {t("Željeni termin", "Desired dates")}
+                  {t("Datum dolaska", "Check-in")}
                 </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="date" name="dateFrom" value={form.dateFrom} onChange={handle}
-                    min={today}
-                    className={`${inputClass} flex-1 min-w-0`}
-                  />
-                  <span className="text-text-light text-sm flex-shrink-0">–</span>
-                  <input
-                    type="date" name="dateTo" value={form.dateTo} onChange={handle}
-                    min={form.dateFrom || today}
-                    className={`${inputClass} flex-1 min-w-0`}
-                  />
-                </div>
+                <button
+                  type="button"
+                  onClick={() => { setShowFrom((v) => !v); setShowTo(false); }}
+                  className={`${inputClass} text-left flex items-center justify-between gap-2 w-full cursor-pointer`}
+                >
+                  <span className={dateFrom ? "text-text" : "text-gray-400"}>
+                    {dateFrom ? fmt(dateFrom) : t("Odaberite datum...", "Select date...")}
+                  </span>
+                  <svg className="w-4 h-4 text-gold flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                  </svg>
+                </button>
+                {showFrom && (
+                  <div className="absolute top-full mt-1 z-50 bg-white rounded-xl shadow-2xl border border-cream-dark left-0">
+                    <DayPicker
+                      mode="single"
+                      selected={dateFrom}
+                      onSelect={(d) => { setDateFrom(d ?? undefined); setShowFrom(false); }}
+                      disabled={{ before: today }}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Datum odlaska */}
+              <div className="flex flex-col gap-1.5 relative" ref={toRef}>
+                <label className="text-xs font-bold uppercase tracking-wide text-text">
+                  {t("Datum odlaska", "Check-out")}
+                </label>
+                <button
+                  type="button"
+                  onClick={() => { setShowTo((v) => !v); setShowFrom(false); }}
+                  className={`${inputClass} text-left flex items-center justify-between gap-2 w-full cursor-pointer`}
+                >
+                  <span className={dateTo ? "text-text" : "text-gray-400"}>
+                    {dateTo ? fmt(dateTo) : t("Odaberite datum...", "Select date...")}
+                  </span>
+                  <svg className="w-4 h-4 text-gold flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                  </svg>
+                </button>
+                {showTo && (
+                  <div className="absolute top-full mt-1 z-50 bg-white rounded-xl shadow-2xl border border-cream-dark right-0">
+                    <DayPicker
+                      mode="single"
+                      selected={dateTo}
+                      onSelect={(d) => { setDateTo(d ?? undefined); setShowTo(false); }}
+                      disabled={{ before: dateFrom ?? today }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
