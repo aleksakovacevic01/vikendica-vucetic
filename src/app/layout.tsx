@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Lato } from "next/font/google";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -35,7 +36,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="sr" className={`h-full antialiased ${playfair.variable} ${lato.variable}`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <WhatsAppButton />
+      </body>
     </html>
   );
 }
